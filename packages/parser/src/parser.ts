@@ -5,7 +5,7 @@ import {
   TSESTreeOptions,
   visitorKeys,
 } from '@typescript-eslint/typescript-estree';
-import { analyzeScope } from './analyze-scope';
+import { analyze, ScopeManager } from '@typescript-eslint/scope-manager';
 
 interface ParseForESLintResult {
   ast: TSESTree.Program & {
@@ -15,7 +15,7 @@ interface ParseForESLintResult {
   };
   services: ParserServices;
   visitorKeys: typeof visitorKeys;
-  scopeManager: ReturnType<typeof analyzeScope>;
+  scopeManager: ScopeManager;
 }
 
 function validateBoolean(
@@ -79,7 +79,12 @@ function parseForESLint(
   const { ast, services } = parseAndGenerateServices(code, parserOptions);
   ast.sourceType = options.sourceType;
 
-  const scopeManager = analyzeScope(ast, options);
+  const scopeManager = analyze(ast, {
+    ecmaVersion: options.ecmaVersion,
+    globalReturn: options.ecmaFeatures.globalReturn,
+    sourceType: options.sourceType,
+  });
+
   return { ast, services, scopeManager, visitorKeys };
 }
 

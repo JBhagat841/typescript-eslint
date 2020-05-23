@@ -56,11 +56,6 @@ ruleTester.run('no-redeclare', rule, {
       options: [{ builtinGlobals: true }],
       env: { browser: false },
     },
-    // https://github.com/eslint/typescript-eslint-parser/issues/443
-    `
-const Foo = 1;
-type Foo = 1;
-    `,
     // https://github.com/eslint/typescript-eslint-parser/issues/535
     `
 function foo({ bar }: { bar: string }) {
